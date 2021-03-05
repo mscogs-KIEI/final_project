@@ -2,8 +2,6 @@
 
 KIEI-451 Winter 2021
 
-
-
 Our team consists of:
 - Dan Peacock
 - Henry Raether 
