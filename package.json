@@ -5,6 +5,7 @@
   "scripts": {},
   "author": "",
   "dependencies": {
-    "firebase": "^8.2.0"
+    "firebase": "^8.2.0",
+    "netlify-cli": "^3.10.6"
   }
 }
