@@ -3,9 +3,20 @@ firebase.auth().onAuthStateChanged(async function(user) {
     // Signed in
     console.log('signed in')
     
-    // This block draws a bar-specific check-in button
+    // "Going home" button to check self out for the night
+    document.querySelector('#check-in').insertAdjacentHTML('beforeend', `
+    <div id='going-home' class='bg-green-600 hover:bg-green-800 text-white px-4 py-2 my-2 rounded-xl'>
+      I'm going home!
+    </div>
+    `)
+    document.querySelector('#going-home').addEventListener('click', async function(event) {
+      event.preventDefault()
+      console.log(`User ${user.uid} is going home for the night!`)      
+    })
+
+    // This block draws bar-specific check-in buttons
     // Bars are hard-coded for now, need to convert as part
-    // of the "lsit bars" story
+    // of the "lsit bars" story and merge into one loop
     let barList = [
       {
         Id: 'FsTWmvFr4q9zOff1Ntjh',
@@ -31,7 +42,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
       // Click event and POST to checkIntoBar
       document.querySelector(`#ci-${barId}`).addEventListener('click', async function(event) {
         event.preventDefault()
-        console.log(`${barName} check-in clicked`)
+        // console.log(`${barName} check-in clicked`)
         let checkInResponse = await fetch('/.netlify/functions/checkIntoBar', {
           method: 'POST',
           body: JSON.stringify({
