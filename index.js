@@ -5,13 +5,21 @@ firebase.auth().onAuthStateChanged(async function(user) {
     
     // "Going home" button to check self out for the night
     document.querySelector('#check-in').insertAdjacentHTML('beforeend', `
-    <div id='going-home' class='bg-green-600 hover:bg-green-800 text-white px-4 py-2 my-2 rounded-xl'>
+    <div id='going-home' class='bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 my-2 rounded-xl'>
       I'm going home!
     </div>
     `)
     document.querySelector('#going-home').addEventListener('click', async function(event) {
       event.preventDefault()
-      console.log(`User ${user.uid} is going home for the night!`)      
+      console.log(`User ${user.uid} is going home for the night!`)
+      let checkOutResponse = await fetch('/.netlify/functions/checkSelfOut', {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: user.uid
+        })
+      })
+      let checkOutData = await checkOutResponse.json()
+      console.log(checkOutData)
     })
 
     // This block draws bar-specific check-in buttons
