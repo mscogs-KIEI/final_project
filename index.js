@@ -3,20 +3,30 @@ firebase.auth().onAuthStateChanged(async function(user) {
     // Signed in
     console.log('signed in')
     document.querySelector("#check-in").insertAdjacentHTML('beforeend', `
-      <div class='bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl'>Check into Test Bar</div>
+      <div id='ci-FsTWmvFr4q9zOff1Ntjh' class='bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl'>Check into Test Bar</div>
     `)
-    document.querySelector("#check-in").addEventListener('click', function(event) {
+    document.querySelector("#check-in").addEventListener('click', async function(event) {
+      event.preventDefault()
       console.log('Test check-in clicked')
-      event.preventDefault()
+      let checkInResponse = await fetch('/.netlify/functions/checkIntoBar', {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: user.uid,
+          bar: 'FsTWmvFr4q9zOff1Ntjh'
+        })
+      })
+      let checkInData = await checkInResponse.json()
+      console.log(checkInData)
+      
     })
-    document.querySelector("#check-in").addEventListener('mouseover', async function(event) {
+    document.querySelector("#ci-FsTWmvFr4q9zOff1Ntjh").addEventListener('mouseover', async function(event) {
       event.preventDefault()
-      let mouseElement = document.querySelector("#check-in")
+      let mouseElement = document.querySelector("#ci-FsTWmvFr4q9zOff1Ntjh")
       mouseElement.classList.add('cursor-pointer')
     })
-    document.querySelector("#check-in").addEventListener('mouseout', async function(event) {
+    document.querySelector("#ci-FsTWmvFr4q9zOff1Ntjh").addEventListener('mouseout', async function(event) {
       event.preventDefault()
-      let mouseElement = document.querySelector("#check-in")
+      let mouseElement = document.querySelector("#ci-FsTWmvFr4q9zOff1Ntjh")
       mouseElement.classList.remove('cursor-pointer')
     })
   } else {
