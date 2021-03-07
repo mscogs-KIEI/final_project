@@ -1,3 +1,14 @@
+async function queryBar(barId) {
+  barUsers = await fetch('/.netlify/functions/listUsersInBar', {
+    method: 'POST',
+    body: JSON.stringify({
+      barId: barId
+    })
+  })
+  userList = await barUsers.json()
+  // console.log(userList)
+}
+
 firebase.auth().onAuthStateChanged(async function(user) {
   if (user) {
     // Signed in
@@ -31,7 +42,6 @@ firebase.auth().onAuthStateChanged(async function(user) {
       event.target.classList.remove('cursor-pointer')
     })
     
-
     // This block draws bar-specific check-in buttons
     // Bars are hard-coded for now, need to convert as part
     // of the "list bars" story and merge into one loop
@@ -47,7 +57,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
         imageUrl: 'https://dailynorthwestern.com/wp-content/uploads/2018/09/PrairieMoon_AllieGoulding_WEB-900x600.jpg'
       }
     ]
-    for (i = 0; i < barList.length; i++) {
+    for (let i = 0; i < barList.length; i++) {
       // Define bar in question
       let barId = barList[i].Id
       let barName = barList[i].name
