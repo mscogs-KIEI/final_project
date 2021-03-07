@@ -5,7 +5,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
     
     // "Going home" button to check self out for the night
     document.querySelector('#check-in').insertAdjacentHTML('beforeend', `
-    <div id='going-home' class='bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 my-2 rounded-xl'>
+    <div id='going-home' class='button bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 my-2 rounded-xl'>
       I'm going home!
     </div>
     `)
@@ -21,10 +21,20 @@ firebase.auth().onAuthStateChanged(async function(user) {
       let checkOutData = await checkOutResponse.json()
       console.log(checkOutData)
     })
+    // These two blocks change the cursor to a hand on mouseover.
+    document.querySelector(`#going-home`).addEventListener('mouseover', async function(event) {
+      event.preventDefault()
+      event.target.classList.add('cursor-pointer')
+    })
+    document.querySelector(`#going-home`).addEventListener('mouseout', async function(event) {
+      event.preventDefault()
+      event.target.classList.remove('cursor-pointer')
+    })
+    
 
     // This block draws bar-specific check-in buttons
     // Bars are hard-coded for now, need to convert as part
-    // of the "lsit bars" story and merge into one loop
+    // of the "list bars" story and merge into one loop
     let barList = [
       {
         Id: 'FsTWmvFr4q9zOff1Ntjh',
@@ -43,7 +53,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
       let barName = barList[i].name
       // Insert button
       document.querySelector("#check-in").insertAdjacentHTML('beforeend', `
-        <div id='ci-${barId}' class='bg-green-500 hover:bg-green-600 text-white px-4 py-2 my-2 rounded-xl'>
+        <div id='ci-${barId}' class='button bg-green-500 hover:bg-green-600 text-white px-4 py-2 my-2 rounded-xl'>
           Check in to ${barName}
         </div>
       `)
