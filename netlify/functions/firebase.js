@@ -1,3 +1,4 @@
+//<script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-firestore.js"></script> NOT SURE IF WE NEED THIS
 const firebase = require("firebase/app")
 require("firebase/firestore")
 

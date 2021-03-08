@@ -9,13 +9,27 @@
   <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.7.3/firebase-ui-auth.css" />
 </head>
 
-<body>
-  <div class="sign-in-or-sign-out"></div>
- 
+<body class="bg-yellow-50">
+  <div class="w-96 mx-auto p-16">
+    <!-- FirebaseUI Auth container -->
+    <div class="sign-in-or-sign-out w-full mb-8"></div>
+
+    <div class="bars w-full">
+      <!-- JavaScript puts stuff here -->
+    </div>
+    <!-- Add New bar here -->
+    <form class="w-full mt-8">
+      <input type="text" id="bar" name="bar" class="my-2 p-2 w-64 border border-gray-400 rounded shadow-xl focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+      <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl">Add</button>
+    </form>
+  </div>
+
   <!-- Put the Firebase config here -->
   <!-- The core Firebase JS SDK is always required and must be listed first -->
+  
   <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
   <!-- Firebase Auth -->
+  <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/ui/4.7.3/firebase-ui-auth.js"></script>
 
