@@ -89,7 +89,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
     let response = await fetch(`/.netlify/functions/createNewBar`) //?userId=${user.uid} <-- add to link?
           // Instead of '?userId=...', I think we need to use 'method: "POST"', like lines 12-17 of
           // todo.js in the Week 9 solution [https://github.com/kiei451-winter2021/todos-final/blob/master/todo.js]
-          //  -Dan
+          //  -Dan COOL
     let bars = await response.json()
 
     for (let i=0; i<bars.length; i++) {
