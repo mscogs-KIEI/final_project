@@ -85,12 +85,20 @@ firebase.auth().onAuthStateChanged(async function(user) {
     // console.log(`Number to bars in collection: ${querySnapshot.size}`)
 
     // let bars = querySnapshot.docs
-
-    let response = await fetch(`/.netlify/functions/createNewBar`) //?userId=${user.uid} <-- add to link?
+    let barId = bar.id
+    let userId = firebase.auth().currentUser.uid
+    let response = await fetch(`/.netlify/functions/createNewBar`, {
+      method: 'POST',
+      body: JSON.stringify({
+        barId: barId,
+        userId: userId
+      })
+      }) //?userId=${user.uid} <-- add to link?
           // Instead of '?userId=...', I think we need to use 'method: "POST"', like lines 12-17 of
           // todo.js in the Week 9 solution [https://github.com/kiei451-winter2021/todos-final/blob/master/todo.js]
           //  -Dan COOL
     let bars = await response.json()
+    console.log(bars)
 
     for (let i=0; i<bars.length; i++) {
       
