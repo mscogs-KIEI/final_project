@@ -11,10 +11,10 @@
 
 <body class="bg-yellow-50 text-center">
   <!-- FirebaseUI Auth container -->
-  <div class="sign-in-or-sign-out w-full text-center my-16">Check-in area</div>
-  <div class="p-16 sm:flex">
-    <div id="check-in" class="sm:w-1/2">
-      This is the check-in area.
+  <div class="sign-in-or-sign-out w-full text-center my-8">
+  </div>
+  <div class="p-16 md:flex">
+    <div id="check-in" class="md:w-1/2 border m-4">
       <div class="bars">
         <!-- JavaScript puts stuff here -->
       </div>
@@ -22,13 +22,15 @@
         <!-- Or Select bar here -->
       </div>
       <!-- Add New bar here -->
-      <form class="mt-8">
-        <input type="text" id="bar" name="bar" class="my-2 p-2 w-64 border border-gray-400 rounded shadow-xl focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+      <div>
+        <div class="w-full">Add a bar:</div>
+      <form class="w-full">
+        <input type="text" id="bar" name="bar" class="my-2 p-2 border border-gray-400 rounded shadow-xl focus:outline-none focus:ring-purple-500 focus:border-purple-500">
         <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl">Add</button>
       </form>
+      </div>
     </div>
-    <div id="friend-locations" class="sm:w-1/2">
-      This is the friend location area.
+    <div id="friend-locations" class="md:w-1/2 border m-4">
     </div>
   </div>
  

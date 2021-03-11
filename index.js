@@ -15,6 +15,19 @@ firebase.auth().onAuthStateChanged(async function(user) {
   if (user) {
     // Signed in
     console.log('signed in')
+    // Header for check in area
+    document.querySelector('#check-in').insertAdjacentHTML('afterbegin', `
+    <div class='font-bold px-4 py-2 my-2'>
+      Going out? Check in!
+    </div>
+    `)
+    // Header for friend location area
+    document.querySelector('#friend-locations').insertAdjacentHTML('afterbegin', `
+    <div class='font-bold px-4 py-2 my-2'>
+      Find your friends!
+    </div>
+    `)
+
     // "Going home" button to check self out for the night
     document.querySelector('#check-in').insertAdjacentHTML('beforeend', `
     <div id='going-home' class='button bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 my-2 rounded-xl'>
@@ -147,7 +160,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
       let barId = barList[i].id
       let barName = barList[i].name
       // Insert button
-      document.querySelector("#check-in").insertAdjacentHTML('beforeend', `
+      document.querySelector("#bar-dropdown").insertAdjacentHTML('beforeend', `
         <div id='ci-${barId}' class='button bg-green-500 hover:bg-green-600 text-white px-4 py-2 my-2 rounded-xl'>
           Check in to ${barName}
         </div>
