@@ -9,26 +9,33 @@
   <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.7.3/firebase-ui-auth.css" />
 </head>
 
-<body class="bg-yellow-50">
-  <div class="w-96 mx-auto p-16">
-    <!-- FirebaseUI Auth container -->
-    <div class="sign-in-or-sign-out w-full mb-8"></div>
-
-    <div class="bars w-full">
-      <!-- JavaScript puts stuff here -->
+<body class="bg-yellow-50 text-center">
+  <!-- FirebaseUI Auth container -->
+  <div class="sign-in-or-sign-out w-full text-center my-8">
+  </div>
+  <div class="p-16 md:flex">
+    <div id="check-in" class="md:w-1/2 border m-4">
+      <div class="bars">
+        <!-- JavaScript puts stuff here -->
+      </div>
+      <div id="bar-dropdown">
+        
+        <!-- Or Select bar here -->
+      </div>
+      <!-- Add New bar here -->
+      <div>
+        <div class="w-full">Add a bar:</div>
+      <form class="w-full">
+        <input type="text" id="bar" name="bar" class="my-2 p-2 border border-gray-400 rounded shadow-xl focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+        <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl">Add</button>
+      </form>
+      <p> <img class="rounded-xl border-4 border-purple-500" src ="https://travel.mqcdn.com/mapquest/travel/wp-content/uploads/2020/05/GettyImages-627888650-720x480.jpg"></p>
+      </div>
     </div>
-    <!-- Add New bar here -->
-    <form class="w-full mt-8">
-      <input type="text" id="bar" name="bar" class="my-2 p-2 w-64 border border-gray-400 rounded shadow-xl focus:outline-none focus:ring-purple-500 focus:border-purple-500">
-      <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl">Add</button>
-    </form>
+    <div id="friend-locations" class="md:w-1/2 border m-4">
+    </div>
   </div>
 
-<body>
-  <div class="sign-in-or-sign-out"></div>
-  
-  <div id="check-in"></div>
- 
   <!-- Put the Firebase config here -->
   <!-- The core Firebase JS SDK is always required and must be listed first -->
   

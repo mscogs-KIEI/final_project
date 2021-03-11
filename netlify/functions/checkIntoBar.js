@@ -1,4 +1,8 @@
 // /.netlify/functions/checkIntoBar
+// This function expects a POST fetch with a body of:
+//  userId: [user's uid]
+//  bar: [The bar's ID]
+
 let firebase = require('./firebase')
 
 exports.handler = async function (event) {

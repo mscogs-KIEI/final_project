@@ -1,4 +1,7 @@
 let db = firebase.firestore()
+
+// queryBar() uses a bar ID to pull a list of
+// users that are checked into the queried bar.
 async function queryBar(barId) {
   barUsers = await fetch('/.netlify/functions/listUsersInBar', {
     method: 'POST',
@@ -11,10 +14,57 @@ async function queryBar(barId) {
 }
 
 firebase.auth().onAuthStateChanged(async function(user) {
-
   if (user) {
     // Signed in
-    console.log('signed in')
+    console.log('Signed in.')
+
+    // drawBarButton() inserts a check in button
+    // for a bar given its name (barText) and ID.
+    function drawBarButton(barText, barId) {
+      // Insert button
+      document.querySelector("#bar-dropdown").insertAdjacentHTML('beforeend', `
+        <div id='ci-${barId}' class='button bg-green-500 hover:bg-green-600 text-white px-4 py-2 my-2 rounded-xl'>
+          Check in to ${barText}
+        </div>
+      `)
+      // Click event and POST to checkIntoBar
+      document.querySelector(`#ci-${barId}`).addEventListener('click', async function(event) {
+        event.preventDefault()
+        // console.log(`${barName} check-in clicked`)
+        let checkInResponse = await fetch('/.netlify/functions/checkIntoBar', {
+          method: 'POST',
+          body: JSON.stringify({
+            userId: user.uid,
+            bar: barId
+          })
+        })
+        let checkInData = await checkInResponse.json()
+        console.log(checkInData)
+      })
+      // These two blocks change the cursor to a hand on mouseover.
+      document.querySelector(`#ci-${barId}`).addEventListener('mouseover', async function(event) {
+        event.preventDefault()
+        event.target.classList.add('cursor-pointer')
+      })
+      document.querySelector(`#ci-${barId}`).addEventListener('mouseout', async function(event) {
+        event.preventDefault()
+        event.target.classList.remove('cursor-pointer')
+      })
+      // End of check-in buttons
+    }
+    // Header for check in area
+    document.querySelector('#check-in').insertAdjacentHTML('afterbegin', `
+    <div class='font-bold px-4 py-2 my-2'>
+      Going out? Check in!
+    </div>
+    `)
+    // Header for friend location area
+    document.querySelector('#friend-locations').insertAdjacentHTML('afterbegin', `
+    <div class='font-bold px-4 py-2 my-2'>
+      Find your friends!
+    </div>
+    `)
+
     // "Going home" button to check self out for the night
     document.querySelector('#check-in').insertAdjacentHTML('beforeend', `
     <div id='going-home' class='button bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 my-2 rounded-xl'>
@@ -151,39 +201,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
       }
     ]
     for (let i = 0; i < barList.length; i++) {
-      // Define bar in question
-      let barId = barList[i].id
-      let barName = barList[i].name
-      // Insert button
-      document.querySelector("#check-in").insertAdjacentHTML('beforeend', `
-        <div id='ci-${barId}' class='button bg-green-500 hover:bg-green-600 text-white px-4 py-2 my-2 rounded-xl'>
-          Check in to ${barName}
-        </div>
-      `)
-      // Click event and POST to checkIntoBar
-      document.querySelector(`#ci-${barId}`).addEventListener('click', async function(event) {
-        event.preventDefault()
-        // console.log(`${barName} check-in clicked`)
-        let checkInResponse = await fetch('/.netlify/functions/checkIntoBar', {
-          method: 'POST',
-          body: JSON.stringify({
-            userId: user.uid,
-            bar: barId
-          })
-        })
-        let checkInData = await checkInResponse.json()
-        console.log(checkInData)
-      })
-      // These two blocks change the cursor to a hand on mouseover.
-      document.querySelector(`#ci-${barId}`).addEventListener('mouseover', async function(event) {
-        event.preventDefault()
-        event.target.classList.add('cursor-pointer')
-      })
-      document.querySelector(`#ci-${barId}`).addEventListener('mouseout', async function(event) {
-        event.preventDefault()
-        event.target.classList.remove('cursor-pointer')
-      })
-      // End of check-in buttons
+      drawBarButton(barList[i].name, barList[i].id)
     }
   } else {
     // Not logged-in
