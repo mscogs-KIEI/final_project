@@ -65,8 +65,15 @@ firebase.auth().onAuthStateChanged(async function(user) {
     }
 
     // Initial welcome message
-    
-    
+    let locationResponse = await fetch('/.netlify/functions/getUserLocation', {
+      method: 'POST',
+      body: JSON.stringify({
+        userId: user.uid
+      })
+    })
+    let locationJSON = await locationResponse.json()
+    // console.log(locationJSON)
+    drawWelcomeMessage(locationJSON.barName)
     // Header for check in area
     document.querySelector('#check-in').insertAdjacentHTML('afterbegin', `
     <div class='font-bold px-4 py-2 my-2'>
@@ -88,7 +95,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
     `)
     document.querySelector('#going-home').addEventListener('click', async function(event) {
       event.preventDefault()
-      console.log(`User ${user.uid} is going home for the night!`)
+      // console.log(`User ${user.uid} is going home for the night!`)
       let checkOutResponse = await fetch('/.netlify/functions/checkSelfOut', {
         method: 'POST',
         body: JSON.stringify({
@@ -96,7 +103,8 @@ firebase.auth().onAuthStateChanged(async function(user) {
         })
       })
       let checkOutData = await checkOutResponse.json()
-      console.log(checkOutData)
+      // console.log(checkOutData)
+      drawWelcomeMessage('home')
     })
     // These two blocks change the cursor to a hand on mouseover.
     document.querySelector(`#going-home`).addEventListener('mouseover', async function(event) {
@@ -109,7 +117,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
     })
     // End of Going Home button.
 
-    db.collection('users').doc(user.uid).set({
+    db.collection('users').doc(user.uid).update({
       name: user.displayName,
       email: user.email
     })
