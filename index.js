@@ -18,6 +18,14 @@ firebase.auth().onAuthStateChanged(async function(user) {
     // Signed in
     console.log('Signed in.')
 
+    // drawWelcomeMessage() writes an appropriate welcome
+    // message and the user's current location.
+    function drawWelcomeMessage(barText) {
+      document.querySelector('#welcome-message').innerHTML = `
+        Hello ${user.displayName}! You are at ${barText}.
+      `
+    }
+
     // drawBarButton() inserts a check in button
     // for a bar given its name (barText) and ID.
     function drawBarButton(barText, barId) {
@@ -35,11 +43,14 @@ firebase.auth().onAuthStateChanged(async function(user) {
           method: 'POST',
           body: JSON.stringify({
             userId: user.uid,
-            bar: barId
+            barId: barId,
+            barName: barText
           })
         })
+
         let checkInData = await checkInResponse.json()
-        console.log(checkInData)
+        drawWelcomeMessage(checkInData.barName)
+        // console.log(checkInData)
       })
       // These two blocks change the cursor to a hand on mouseover.
       document.querySelector(`#ci-${barId}`).addEventListener('mouseover', async function(event) {
@@ -52,6 +63,10 @@ firebase.auth().onAuthStateChanged(async function(user) {
       })
       // End of check-in buttons
     }
+
+    // Initial welcome message
+    
+    
     // Header for check in area
     document.querySelector('#check-in').insertAdjacentHTML('afterbegin', `
     <div class='font-bold px-4 py-2 my-2'>
@@ -148,7 +163,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
           // todo.js in the Week 9 solution [https://github.com/kiei451-winter2021/todos-final/blob/master/todo.js]
           //  -Dan COOL
     let bars = await response.json()
-    console.log(bars)
+    // console.log(bars)
 
     for (let i=0; i<bars.length; i++) {
       
