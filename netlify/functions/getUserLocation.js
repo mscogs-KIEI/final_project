@@ -10,17 +10,17 @@ exports.handler = async function (event) {
     let request = JSON.parse(event.body)
     console.log(`Checking location of user ${request.userId}`)
     let userQuery = await db.collection('users').doc(request.userId).get()
-    let userData = userQuery.data()
+    let userData = await userQuery.data()
     let barName = ''
-    console.log(`User location is ${userData.location}`)
     if (userData.location) {
-        console.log('Inside if')
+        console.log(`User location is ${userData.location}.`)
         let barQuery = await db.collection('bar').doc(userData.location).get()
         // console.log(barQuery)
         let barData = barQuery.data()
         // console.log(barData)
         barName = barData.text
     } else {
+        console.log('User location undefined')
         barName = 'home'
     }
     return {
