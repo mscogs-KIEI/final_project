@@ -72,7 +72,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
       })
     })
     let locationJSON = await locationResponse.json()
-    // console.log(locationJSON)
+    console.log(locationJSON)
     drawWelcomeMessage(locationJSON.barName)
     // Header for check in area
     document.querySelector('#check-in').insertAdjacentHTML('afterbegin', `

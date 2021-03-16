@@ -12,11 +12,11 @@ exports.handler = async function (event) {
     let userQuery = await db.collection('users').doc(request.userId).get()
     let userData = await userQuery.data()
     let barName = ''
-    if (userData.location) {
-        console.log(`User location is ${userData.location}.`)
-        let barQuery = await db.collection('bar').doc(userData.location).get()
-        // console.log(barQuery)
-        let barData = barQuery.data()
+    console.log(`User location is ${userData.location}.`)
+    let barQuery = await db.collection('bar').doc(userData.location).get()
+    // console.log(barQuery)
+    let barData = barQuery.data()
+    if (barData) {
         // console.log(barData)
         barName = barData.text
     } else {
