@@ -211,20 +211,16 @@ firebase.auth().onAuthStateChanged(async function(user) {
     // This block draws bar-specific check-in buttons
     // Bars are hard-coded for now, need to convert as part
     // of the "list bars" story and merge into one loop
-    let barList = [
-      {
-        id: 'FsTWmvFr4q9zOff1Ntjh',
-        name: 'DryHop Brewers',
-        imageUrl: 'https://images.squarespace-cdn.com/content/v1/5bce90a8523958e26e9a434d/1600798629477-J2WQ5Y2ZBR0I3RJYUL5I/ke17ZwdGBToddI8pDm48kBzQH4RWPYqW2DD4NX3pz-JZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZamWLI2zvYWH8K3-s_4yszcp2ryTI0HqTOaaUohrI8PI517V6XQux86P6g_UYsh_OSCLQfLRlx_kfEHVvADs56A/DryHop+Brewers_Barman%27s+Banquet.png',
-      },
-      {
-        id: 'dWNK0uAGeNySVL6gVs2H',
-        name: 'Prairie Moon',
-        imageUrl: 'https://dailynorthwestern.com/wp-content/uploads/2018/09/PrairieMoon_AllieGoulding_WEB-900x600.jpg'
-      }
-    ]
+    let responseBar = await fetch(`/.netlify/functions/listBars`, {
+      method: 'POST',
+      body: JSON.stringify({
+        id: barId,
+        name: userId
+      })
+      })
+    let barList = await responseBar.json()
     for (let i = 0; i < barList.length; i++) {
-      drawBarButton(barList[i].name, barList[i].id)
+      drawBarButton(barList[i].text, barList[i].id)
     }
   } else {
     // Not logged-in
