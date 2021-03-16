@@ -138,13 +138,14 @@ firebase.auth().onAuthStateChanged(async function(user) {
         console.log(`new bar with ID ${barId} created`)
 
         document.querySelector('.bars').insertAdjacentHTML('beforeend', `
-          <div class="bar-${barId} py-4 text-xl border-b-2 border-purple-500 w-full">
-            <a href="#" class="done p-2 text-sm bg-green-500 text-white">✓</a>
-            ${barText}
-          </div>
-        `)
 
-        document.querySelector(`.bar-${barId} .done`).addEventListener('click', async function(event) {
+        <div id='ci-${barId}' class='button bg-green-500 hover:bg-green-600 text-white px-4 py-2 my-2 rounded-xl'>
+          Check in to ${barText}
+        </div>
+        `)
+        document.location.href = 'index.html'
+
+        document.querySelector(`.bar-${barId}`).addEventListener('click', async function(event) {
           event.preventDefault()
           document.querySelector(`.bar-${barId}`).classList.add('opacity-20')
           await db.collection('bar').doc(barId).delete()
