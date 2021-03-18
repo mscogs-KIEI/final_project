@@ -155,11 +155,14 @@ firebase.auth().onAuthStateChanged(async function(user) {
       event.preventDefault()
       let barText = document.querySelector('#bar').value
       if (barText.length > 0) {
-        let docRef = await db.collection('bar').add({
-          text: barText,
-          userId: user.uid
+        newBarData = await fetch('/.netlify/functions/createNewBar', {
+          method: 'POST',
+          body: JSON.stringify({
+            text: barText,
+            userId: user.uid
+          })
         })
-        let barId = docRef.id
+        let barId = newBarData.id
         console.log(`new bar with ID ${barId} created`)
         document.querySelector('.bars').insertAdjacentHTML('beforeend', `
         <div id='ci-${barId}' class='button bg-green-500 hover:bg-green-600 text-white px-4 py-2 my-2 rounded-xl'>
