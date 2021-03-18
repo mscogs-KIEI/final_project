@@ -21,9 +21,13 @@ firebase.auth().onAuthStateChanged(async function(user) {
     
     // Make sure we have a user in the collection
     // to manipulate.
-    db.collection('users').doc(user.uid).update({
-      name: user.displayName,
-      email: user.email
+    await fetch('/.netlify/functions/pushUser', {
+      method: 'POST',
+      body: JSON.stringify({
+        id: user.uid,
+        name: user.displayName,
+        email: user.email
+      })
     })
 
     // drawWelcomeMessage() writes an appropriate welcome
@@ -151,7 +155,6 @@ firebase.auth().onAuthStateChanged(async function(user) {
       event.preventDefault()
       let barText = document.querySelector('#bar').value
       if (barText.length > 0) {
-        // Add user ID to newly created to-do
         let docRef = await db.collection('bar').add({
           text: barText,
           userId: user.uid
