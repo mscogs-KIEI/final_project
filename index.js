@@ -18,6 +18,13 @@ firebase.auth().onAuthStateChanged(async function(user) {
   if (user) {
     // Signed in
     console.log('Signed in.')
+    
+    // Make sure we have a user in the collection
+    // to manipulate.
+    db.collection('users').doc(user.uid).update({
+      name: user.displayName,
+      email: user.email
+    })
 
     // drawWelcomeMessage() writes an appropriate welcome
     // message and the user's current location.
@@ -25,6 +32,26 @@ firebase.auth().onAuthStateChanged(async function(user) {
       document.querySelector('#welcome-message').innerHTML = `
         Hello ${user.displayName}! You are at ${barText}.
       `
+    }
+
+    // drawFriendCount prints the number of people at each bar, if any.
+    async function drawFriendCount(barText, barId) {
+      barUsers = await queryBar(barId)
+      // console.log(barUsers)
+      if (barUsers.length == 1) {
+        document.querySelector('#friend-locations').insertAdjacentHTML('beforeend', `
+          <div id="friends-${barId}" class="py-4 text-xl border-b-2 border-purple-500 w-full">
+            1 person is at ${barText}!
+          </div>
+        `)
+      } else if (barUsers.length > 0) {
+        document.querySelector('#friend-locations').insertAdjacentHTML('beforeend', `
+          <div id="friends-${barId}" class="py-4 text-xl border-b-2 border-purple-500 w-full">
+            ${barUsers.length} people are at ${barText}!
+          </div>
+        `)
+      }
+
     }
 
     // drawBarButton() inserts a check in button
@@ -103,9 +130,10 @@ firebase.auth().onAuthStateChanged(async function(user) {
           userId: user.uid
         })
       })
-      let checkOutData = await checkOutResponse.json()
+      // let checkOutData = await checkOutResponse.json()
       // console.log(checkOutData)
       drawWelcomeMessage('home')
+      
     })
     // These two blocks change the cursor to a hand on mouseover.
     document.querySelector(`#going-home`).addEventListener('mouseover', async function(event) {
@@ -118,26 +146,18 @@ firebase.auth().onAuthStateChanged(async function(user) {
     })
     // End of Going Home button.
 
-    db.collection('users').doc(user.uid).update({
-      name: user.displayName,
-      email: user.email
-    })
 
     document.querySelector('form').addEventListener('submit', async function(event) {
       event.preventDefault()
-
       let barText = document.querySelector('#bar').value
-
       if (barText.length > 0) {
         // Add user ID to newly created to-do
         let docRef = await db.collection('bar').add({
           text: barText,
           userId: user.uid
         })
-
         let barId = docRef.id
         console.log(`new bar with ID ${barId} created`)
-
         document.querySelector('.bars').insertAdjacentHTML('beforeend', `
         <div id='ci-${barId}' class='button bg-green-500 hover:bg-green-600 text-white px-4 py-2 my-2 rounded-xl'>
           Check in to ${barText}
@@ -146,54 +166,6 @@ firebase.auth().onAuthStateChanged(async function(user) {
         document.location.href = 'index.html'
       }
     })
-
-    // Show only my to-dos
-    // let querySnapshot = await db.collection('bars').where('userId', '==', user.uid).get()
-    // console.log(`Number to bars in collection: ${querySnapshot.size}`)
-
-    // let bars = querySnapshot.docs
-    let barId = bar.id
-    let userId = firebase.auth().currentUser.uid
-    let response = await fetch(`/.netlify/functions/createNewBar`, {
-      method: 'POST',
-      body: JSON.stringify({
-        barId: barId,
-        userId: userId
-      })
-      }) //?userId=${user.uid} <-- add to link?
-          // Instead of '?userId=...', I think we need to use 'method: "POST"', like lines 12-17 of
-          // todo.js in the Week 9 solution [https://github.com/kiei451-winter2021/todos-final/blob/master/todo.js]
-          //  -Dan COOL
-    let bars = await response.json()
-    // console.log(bars)
-
-    for (let i=0; i<bars.length; i++) {
-      
-      // let barId = bars[i].id
-      // let bar = bars[i].data()
-      // let barText = bar.text
-
-      let bar = bars[i]
-      let barId = bar.id
-      let barText = bar.text
-
-      document.querySelector('.bars').insertAdjacentHTML('beforeend', `
-        <div class="bar-${barId} py-4 text-xl border-b-2 border-purple-500 w-full">
-          <a href="#" class="done p-2 text-sm bg-green-500 text-white">✓</a>
-          ${barText}
-        </div>
-      `)
-
-      document.querySelector(`.bar-${barId} .done`).addEventListener('click', async function(event) {
-        event.preventDefault()
-        document.querySelector(`.bar-${barId}`).classList.add('opacity-20')
-        await db.collection('bars').doc(barId).delete()
-      })
-
-      // This part puts bars where people are checked in
-      // into the find friends area.
-
-    }
 
     // Create a sign-out button
     document.querySelector('.sign-in-or-sign-out').innerHTML = `
@@ -207,31 +179,14 @@ firebase.auth().onAuthStateChanged(async function(user) {
     })
     
     // This block draws bar-specific check-in buttons
-    let responseBar = await fetch(`/.netlify/functions/listBars`, {
-      method: 'POST',
-      body: JSON.stringify({
-        id: barId,
-        name: userId
-      })
-      })
+    // Get the list of bars
+    let responseBar = await fetch(`/.netlify/functions/listBars`)
     let barList = await responseBar.json()
+
+    // Draw a button for each bar and list how many users are there.
     for (let i = 0; i < barList.length; i++) {
       drawBarButton(barList[i].text, barList[i].id)
-      barUsers = await queryBar(barList[i].id)
-      // console.log(barUsers)
-      if (barUsers.length == 1) {
-        document.querySelector('#friend-locations').insertAdjacentHTML('beforeend', `
-          <div id="friends-${barList[i].id}" class="py-4 text-xl border-b-2 border-purple-500 w-full">
-            1 person is at ${barList[i].text}!
-          </div>
-        `)
-      } else if (barUsers.length > 0) {
-        document.querySelector('#friend-locations').insertAdjacentHTML('beforeend', `
-          <div id="friends-${barList[i].id}" class="py-4 text-xl border-b-2 border-purple-500 w-full">
-            ${barUsers.length} people are at ${barList[i].text}!
-          </div>
-        `)
-      }
+      drawFriendCount(barList[i].text, barList[i].id)
     }
   } else {
     // Not logged-in
