@@ -196,9 +196,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
     }
   } else {
     // Not logged-in
-
-    // Hide the form when signed-out
-    document.querySelector('form').classList.add('hidden')
+    document.querySelector('#content').classList.add('invisible')
 
     // Initializes FirebaseUI Auth
     let ui = new firebaseui.auth.AuthUI(firebase.auth())
