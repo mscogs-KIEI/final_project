@@ -11,6 +11,7 @@ async function queryBar(barId) {
   })
   userList = await barUsers.json()
   // console.log(userList)
+  return userList
 }
 
 firebase.auth().onAuthStateChanged(async function(user) {
@@ -32,7 +33,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
       // Insert button
       document.querySelector("#bar-dropdown").insertAdjacentHTML('beforeend', `
         <div id='ci-${barId}' class='button bg-green-500 hover:bg-green-600 text-white px-4 py-2 my-2 rounded-xl'>
-          Check in to ${barText}
+          Check in to ${barText}.
         </div>
       `)
       // Click event and POST to checkIntoBar
@@ -72,7 +73,7 @@ firebase.auth().onAuthStateChanged(async function(user) {
       })
     })
     let locationJSON = await locationResponse.json()
-    console.log(locationJSON)
+    // console.log(locationJSON)
     drawWelcomeMessage(locationJSON.barName)
     // Header for check in area
     document.querySelector('#check-in').insertAdjacentHTML('afterbegin', `
@@ -138,19 +139,11 @@ firebase.auth().onAuthStateChanged(async function(user) {
         console.log(`new bar with ID ${barId} created`)
 
         document.querySelector('.bars').insertAdjacentHTML('beforeend', `
-
         <div id='ci-${barId}' class='button bg-green-500 hover:bg-green-600 text-white px-4 py-2 my-2 rounded-xl'>
           Check in to ${barText}
         </div>
         `)
         document.location.href = 'index.html'
-
-        document.querySelector(`.bar-${barId}`).addEventListener('click', async function(event) {
-          event.preventDefault()
-          document.querySelector(`.bar-${barId}`).classList.add('opacity-20')
-          await db.collection('bar').doc(barId).delete()
-        })
-        document.querySelector('#bar').value = ''
       }
     })
 
@@ -196,6 +189,10 @@ firebase.auth().onAuthStateChanged(async function(user) {
         document.querySelector(`.bar-${barId}`).classList.add('opacity-20')
         await db.collection('bars').doc(barId).delete()
       })
+
+      // This part puts bars where people are checked in
+      // into the find friends area.
+
     }
 
     // Create a sign-out button
@@ -210,8 +207,6 @@ firebase.auth().onAuthStateChanged(async function(user) {
     })
     
     // This block draws bar-specific check-in buttons
-    // Bars are hard-coded for now, need to convert as part
-    // of the "list bars" story and merge into one loop
     let responseBar = await fetch(`/.netlify/functions/listBars`, {
       method: 'POST',
       body: JSON.stringify({
@@ -222,6 +217,21 @@ firebase.auth().onAuthStateChanged(async function(user) {
     let barList = await responseBar.json()
     for (let i = 0; i < barList.length; i++) {
       drawBarButton(barList[i].text, barList[i].id)
+      barUsers = await queryBar(barList[i].id)
+      // console.log(barUsers)
+      if (barUsers.length == 1) {
+        document.querySelector('#friend-locations').insertAdjacentHTML('beforeend', `
+          <div id="friends-${barList[i].id}" class="py-4 text-xl border-b-2 border-purple-500 w-full">
+            1 person is at ${barList[i].text}!
+          </div>
+        `)
+      } else if (barUsers.length > 0) {
+        document.querySelector('#friend-locations').insertAdjacentHTML('beforeend', `
+          <div id="friends-${barList[i].id}" class="py-4 text-xl border-b-2 border-purple-500 w-full">
+            ${barUsers.length} people are at ${barList[i].text}!
+          </div>
+        `)
+      }
     }
   } else {
     // Not logged-in

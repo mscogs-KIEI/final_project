@@ -13,12 +13,22 @@ exports.handler = async function (event) {
     let userData = await userQuery.data()
     let barName = ''
     console.log(`User location is ${userData.location}.`)
-    let barQuery = await db.collection('bar').doc(userData.location).get()
-    // console.log(barQuery)
-    let barData = barQuery.data()
-    if (barData) {
-        // console.log(barData)
-        barName = barData.text
+    if (userData.location != '') {
+        let barQuery = await db.collection('bar').doc(userData.location).get()
+        // console.log(barQuery)
+        let barData = barQuery.data()
+        if (barData) {
+            if (barData.text == '') {
+                console.log('User location undefined')
+                barName = 'home'
+            } else {
+                barName = barData.text
+            }
+            // console.log(barData)
+        } else {
+            console.log('User location undefined')
+            barName = 'home'
+        }
     } else {
         console.log('User location undefined')
         barName = 'home'
